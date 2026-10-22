@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* Layout: editorial assimétrico — superfícies escuras de "noite no coqueiral" alternando com a cal das paredes;
+   cada suíte carrega a cor da própria decoração (macramê do Sol, madeira da Lua, índigo do Mar, verde do Céu). */
+@theme {
+  --color-noite: #0d1a15;      /* verde-quase-preto do coqueiral à noite */
+  --color-noite-2: #15251f;
+  --color-cal: #eeede6;        /* parede caiada */
+  --color-cal-2: #e3e1d6;
+  --color-areia: #cbbfa7;
+  --color-jatoba: #5b3220;     /* madeira escura das venezianas */
+  --color-piscina: #8fd6cc;    /* turquesa da piscina (só sobre fundo escuro) */
+  --color-piscina-funda: #1d6b66;
+  --color-sol: #b4552f;
+  --color-lua: #7b3d27;
+  --color-mar: #24417a;
+  --color-ceu: #2f6c5e;
+  --color-tinta: #17221d;      /* texto sobre a cal */
+  --color-tinta-suave: #4c5a53;
+
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: "Hanken Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  --ease-luxo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+
+@layer base {
+html {
+  background: var(--color-noite);
+  -webkit-text-size-adjust: 100%;
+}
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body {
+  margin: 0;
+  background: var(--color-noite);
+  color: var(--color-cal);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 350;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 60;
+  background: var(--color-noite);
+}
+
+::selection { background: var(--color-piscina); color: var(--color-noite); }
+
+h1, h2, h3 { text-wrap-style: balance; font-weight: 400; }
+p { text-wrap-style: pretty; }
+}
+
+/* componentes ficam numa camada abaixo dos utilitários, para que classes do Tailwind possam ajustá-los */
+@layer components {
+.gutter {
+  padding-left: var(--gutter);
+  padding-right: var(--gutter-r);
+}
+@media (min-width: 768px) {
+  .gutter {
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(40px, env(safe-area-inset-right, 0px));
+  }
+}
+@media (min-width: 1280px) {
+  .gutter {
+    padding-left: max(72px, env(safe-area-inset-left, 0px));
+    padding-right: max(72px, env(safe-area-inset-right, 0px));
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+/* Linhas de títulos: a máscara esconde o deslocamento vertical do texto que entra. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-piscina);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.on-light :focus-visible { outline-color: var(--color-piscina-funda); }
+
+/* Granulação sutil sobre fotos ampliadas, disfarça a resolução das imagens originais. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Vidro: usado apenas no header compacto, no seletor de reserva do hero e no cartão de reserva. */
+.glass {
+  background: color-mix(in oklab, var(--color-noite) 52%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--color-cal) 16%, transparent);
+}
+.glass-light {
+  background: color-mix(in oklab, var(--color-cal) 78%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  backdrop-filter: blur(16px) saturate(130%);
+  border: 1px solid color-mix(in oklab, var(--color-tinta) 10%, transparent);
+}
+
+/* Venezianas da Suíte Céu, desenhadas em CSS a partir da madeira das fotos. */
+.louvers {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #3b2016 0 10px,
+      #5b3220 10px 18px,
+      #23130d 18px 22px
+    );
+  box-shadow: inset 0 0 0 10px #2b170f;
+}
+
+/* Fotos com zoom no hover: só transform, nunca dimensão. */
+.zoom-img { transition: transform 1.2s var(--ease-luxo), filter 0.8s var(--ease-luxo); }
+@media (hover: hover) and (pointer: fine) {
+  .zoom-host:hover .zoom-img { transform: scale(1.07); }
+}
+
+.scroll-line {
+  animation: scroll-line 2.4s var(--ease-luxo) infinite;
+  transform-origin: top;
+}
+@keyframes scroll-line {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.7);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Arredores: animações decorativas leves (transform/opacity e traço de SVG pequeno). */
+.wind-line {
+  stroke-dasharray: 120 520;
+  animation: wind 4.8s linear infinite;
+}
+@keyframes wind { from { stroke-dashoffset: 640; } to { stroke-dashoffset: 0; } }
+.kite { animation: kite 6s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes kite { 0%, 100% { transform: translate(0, 0) rotate(-6deg); } 50% { transform: translate(-14px, 8px) rotate(5deg); } }
+.ripple { animation: ripple 3.9s cubic-bezier(0.22, 1, 0.36, 1) infinite; opacity: 0; }
+@keyframes ripple { 0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; } }
+.sun { animation: sun 7s ease-in-out infinite alternate; }
+@keyframes sun { from { transform: translate(-50%, 0); } to { transform: translate(-50%, 18px); } }
